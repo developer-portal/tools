@@ -89,6 +89,12 @@ logg () {
 }
 
 vrun () {
+  [[ "$1" == '-a' ]] && {
+    shift
+    [[ "$INT" ]] && ask "$1"
+
+  }
+
   [[ "$1" == '-s' ]] && {
     shift
     logg "[NOT RUN] $1"
@@ -96,17 +102,13 @@ vrun () {
 
   }
 
-  [[ "$1" == '-a' ]] && {
-    shift
-    [[ "$INT" ]] && ask "$1"
-
-  }
-
   logg "$1"
 
   [[ "$DEB" ]] && set -x
-  bash -c "$1 2>&1" || die "Error running '$1'"
+  bash -c "$1 2>&1" || die "while running '$1'"
   [[ "$DEB" ]] && set +x
+
+  return 0
 
 }
 
@@ -138,14 +140,19 @@ buildsite () {
 
   scd 'website'
   logg 'Building site ...'
-  vrun 'jekyll build' | grep -v "Build Warning: Layout 'content' requested in"
 
+  local f=
+  local O
+  O="$(vrun 'jekyll build')" || f=y
+  grep -v "Build Warning: Layout 'content' requested in" <<< "$O"
+  [[ -n "$f" ]] && die "Jekyll build failed!"
+
+  [[ -d "$X" ]] || die "'$X' does not exist!"
   find "$X" -type f -iname '*.html' | while read z; do
     TMP="`ruby -ne 'BEGIN{ \$pre = false } ; x = \$_ ; \$pre = ( (x =~ /<pre/i) || (\$pre && !(x =~ /<\/pre/i) ) ) ; print unless (!\$pre && x =~ /^\s*$/)' < "$z"`"
 
     echo "$TMP" > "$z"
     TMP=
-
   done
 
 }
