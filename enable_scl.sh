@@ -1,8 +1,9 @@
 
-[[ "$SCL_RUBY" ]] && {
-   . scl_source enable "$SCL_RUBY" || die "$F scl_source enable $SCL_RUBY"
-  scl_enabled "$SCL_RUBY" || die "$F enable $SCL_RUBY"
-  echo "scl enabled: $SCL_RUBY"
-
+[[ "$SCL_ENABLE" ]] && {
+  for scl in $SCL_ENABLE; do
+     . scl_source enable "$scl" || die "$F scl_source enable $scl"
+    scl_enabled "$scl" || die "$F enable $scl"
+    echo "scl enabled: $scl"
+  done
 }
 
