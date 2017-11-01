@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-#   ./statistics.rb
+#   ./statistics.rb <file>
 #     Generates table from Google Analytics 'web table' copy-pasted into a file.
 #
 #   Example:
@@ -13,7 +13,7 @@ ins = -> (z) {
   d[l].push(z) if d[l].size < 3
 }
 
-d['Statistics for last 30 days'] = %w()
+d['Statistics for ?/2017'] = %w()
 
 l = '<insert_____________date>'
 d[l] = %w(Pageviews Unique\ Pageviews Avg.\ Time\ on\ Page)
