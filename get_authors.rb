@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-# This script gets last 5 authors on a file and writes them on the end.
+# This script gets last 5 authors of a file and writes them at the end of the file.
 mdfiles = File.join("*","**","*.md")
 files = Dir.glob(mdfiles)
 def create_md (a,e)
