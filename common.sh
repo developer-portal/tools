@@ -21,7 +21,15 @@
 
 getd () {
   readlink -f "$P/$1"
+}
 
+get_authors () {
+  local S="`getd "tools/get_authors.rb"`"
+
+  [[ -r "$S" ]] || die 'get_authors script missing'
+
+  scd "website/content"
+  vrun "ruby '$S'"
 }
 
 usage () {
@@ -31,7 +39,6 @@ usage () {
   ' | ${PAGER-more}
 
   exit 0
-
 }
 
 upgit () {
@@ -40,7 +47,6 @@ upgit () {
   [[ -d "$D" ]] || {
     scd "`dirname "$D"`"
     vrun "git clone https://github.com/developer-portal/`basename "$1"`.git"
-
   }
 
   scd "$1"
@@ -49,7 +55,6 @@ upgit () {
   vrun 'git checkout master'
   [[ "`git branch | grep '^*' | cut -d' ' -f2`" == 'master' ]] || die "Invalid branch"
   vrun 'git pull'
-
 }
 
 scd () {
@@ -138,6 +143,9 @@ buildsite () {
 
   }
 
+  logg 'Generating authors ...'
+  get_authors
+
   scd 'website'
   logg 'Building site ...'
 
@@ -211,7 +219,6 @@ prepgit () {
   }
 
   vrun 'git status'
-
 }
 
  [[ "$1" == "-h" || "$1" == "--help" ]] && usage
