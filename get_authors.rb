@@ -2,7 +2,7 @@
 # This script gets last 5 authors of a file and writes them at the end of the file.
 
 def md_mailto(a, e)
-  "[#{a}](#{e})"
+  "[#{a}](mailto:#{e})"
 end
 
 def md_center(text)
