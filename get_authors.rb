@@ -9,6 +9,11 @@ def md_center(text)
   '{:center: style="text-align: center"}' + "\n#{text}\n{:center}"
 end
 
+def arr_to_hash(array)
+  sliced_array = array.each_slice(2).sort
+  Hash[sliced_array]
+end
+
 files = Dir.glob File.join('*', '**', '*.md')
 
 files.each do |f|
@@ -16,7 +21,7 @@ files.each do |f|
   author_md = []
   command = 'git log -5 --pretty=format:"%an;%ae" '
   command_out = %x(#{command}#{f}).split(/[;\n]/)
-  author_mail = command_out.each_slice(2).to_h.sort
+  author_mail = arr_to_hash command_out
 
   author_mail.each do |a, e|
     author_md << md_mailto(a, e)
