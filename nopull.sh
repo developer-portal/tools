@@ -10,7 +10,7 @@
 [[ "$SITE" ]] || exit 1
 [[ -n "$1" ]] || die 'you have to specify a branch.'
 
-[[ "$1" == "devel" ]] && {
+[[ "$1" == "devel" ]] || {
   scd "website"
   echo > _includes/announcement.html
 }
