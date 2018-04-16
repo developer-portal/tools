@@ -36,6 +36,12 @@ class TestGetAuthors < Minitest::Test
     assert_match %Q|\n{:center: style=\"text-align: center\"}\nAuthors: [Your Name](mailto:you@example.com)\n{:center}|, content
   end
 
+  def test_get_authors
+    require "#{@original_dir}/get_authors.rb"
+    method_output = get_authors File.join(@subdir, 'README.md')
+    assert_equal ['Your Name', 'you@example.com'], method_output
+  end
+
   def test_that_it_writes_authors_once
     skip
   end
