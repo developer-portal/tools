@@ -13,9 +13,9 @@ ins = -> (z) {
   d[l].push(z) if d[l].size < 3
 }
 
-d['Statistics for ?/2017'] = %w()
+#d['Statistics for ?/2017'] = %w()
 
-l = '<insert_____________date>'
+l = '<insert____________date>'
 d[l] = %w(Pageviews Unique\ Pageviews Avg.\ Time\ on\ Page)
 
 k = l
@@ -33,4 +33,4 @@ ARGF.each { |b|
 }
 
 o = d.map { |x| x.join('|') }
-puts `column -ts '|' <<< "#{o.join("\n  ")}"`
+puts `column -ts '|' <<< "#{o.join("\n")}"`
