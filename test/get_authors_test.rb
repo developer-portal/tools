@@ -1,6 +1,8 @@
 require "minitest/autorun"
 require "fileutils"
 
+require_relative "../get_authors.rb"
+
 class TestGetAuthors < Minitest::Test
   def setup
     @original_dir = Dir.pwd
@@ -37,9 +39,18 @@ class TestGetAuthors < Minitest::Test
   end
 
   def test_get_authors
-    require "#{@original_dir}/get_authors.rb"
     method_output = get_authors File.join(@subdir, 'README.md')
     assert_equal ['Your Name', 'you@example.com'], method_output
+  end
+
+  def test_markdown_mailto
+    author, email = "Your Name", "you@example.com"
+    assert_match "[#{author}](mailto:#{email})", Markdown.mailto(author, email)
+  end
+
+  def test_markdown_center
+    text = 'foo'
+    assert_match %Q|{:center: style="text-align: center"}\n#{text}\n{:center}|, Markdown.center(text)
   end
 
   def test_that_it_writes_authors_once
