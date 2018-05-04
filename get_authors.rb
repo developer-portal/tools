@@ -2,8 +2,30 @@
 # This script gets last 5 authors of a file and writes them at the end of the file.
 
 # Get last 5 authors of a file and their email
-def get_authors(file)
-  `git log -5 --pretty=format:"%an;%ae" #{file}`.split(/[;\n]/)
+module Git
+  class Log
+    def initialize(log)
+      @log = log
+    end
+
+    def author_email
+      author_email = Hash.new
+      @log.each_line do |line|
+        author, mail = line.strip.split(';')
+
+        author_email[author] = mail unless author_email.key?(author)
+      end
+      author_email
+    end
+
+    def to_s
+      @log
+    end
+  end
+
+  def self.log(file)
+    Log.new(`git log -5 --pretty=format:"%an;%ae" #{file}`)
+  end
 end
 
 module Markdown
@@ -20,9 +42,7 @@ def main
   files = Dir.glob File.join('*', '**', '*.md')
 
   files.each do |f|
-    author_mail = get_authors(f).each_slice(2).to_h.sort
-
-    author_md = author_mail.collect { |a, e| Markdown.mailto(a, e) }
+    author_md = Git.log(f).author_email.sort.map { |a, e| Markdown.mailto(a, e) }
 
     output = author_md.join ', '
     output = "Authors: #{output}"
