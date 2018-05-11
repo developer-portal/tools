@@ -52,7 +52,9 @@ def main
   files = Dir.glob File.join('*', '**', '*.md')
 
   files.each do |f|
-    author_md = Git.log(f).author_email.sort.map { |a, e| Markdown.mailto(a, e) }
+    author_md = Git.log(f).author_email
+    author_md = author_md.sort
+    author_md = author_md.map { |a, e| Markdown.mailto(a, e) }
 
     output = author_md.join ', '
     output = "Authors: #{output}"
