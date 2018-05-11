@@ -3,11 +3,17 @@
 
 # Get last 5 authors of a file and their email
 module Git
+  # Git::Log parses output passed from Git#log and creates a hash with author as a key and email as value
   class Log
+    # We are expecting output from "git log" command
     def initialize(log)
       @log = log
     end
 
+    # Iterate through each line in the log
+    # filter out whitespace characters, split the line by semicolon
+    # assign the returned pair (i.e. author and email) to author and email variables
+    # then create hash with author as key and email as value and return it.
     def author_email
       author_email = Hash.new
       @log.each_line do |line|
@@ -18,11 +24,15 @@ module Git
       author_email
     end
 
+    # To ensure log will be text when we want
     def to_s
       @log
     end
   end
 
+  # Create instance of Git::Log and pass it output from git log command
+  # return 5 last authors of a particular file
+  # %an returns author, semicolon for effortless parsing, %ae return email of author
   def self.log(file)
     Log.new(`git log -5 --pretty=format:"%an;%ae" #{file}`)
   end
