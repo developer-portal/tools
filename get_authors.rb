@@ -1,9 +1,41 @@
 #!/usr/bin/ruby
 # This script gets last 5 authors of a file and writes them at the end of the file.
 
-# Get last 5 authors of a file and their email
-def get_authors(file)
-  `git log -5 --pretty=format:"%an;%ae" #{file}`.split(/[;\n]/)
+
+# Git::Log parses output passed from Git#log and creates a hash with author as a key and email as value
+module Git
+  class Log
+    # We are expecting output from "git log" command
+    def initialize(log)
+      @log = log
+    end
+
+    # Iterate through each line in the log
+    # filter out whitespace characters, split the line by semicolon
+    # assign the returned pair (i.e. author and email) to author and email variables
+    # then create hash with author as key and email as value and return it.
+    def author_email
+      author_email = Hash.new
+      @log.each_line do |line|
+        author, mail = line.strip.split(';')
+
+        author_email[author] = mail unless author_email.key?(author)
+      end
+      author_email
+    end
+
+    # To ensure log will be text when we want
+    def to_s
+      @log
+    end
+  end
+
+  # Create instance of Git::Log and pass it output from git log command
+  # return 5 last authors of a particular file
+  # %an returns author, semicolon for effortless parsing, %ae return email of author
+  def self.log(file)
+    Log.new(`git log -5 --pretty=format:"%an;%ae" #{file}`)
+  end
 end
 
 module Markdown
@@ -20,9 +52,9 @@ def main
   files = Dir.glob File.join('*', '**', '*.md')
 
   files.each do |f|
-    author_mail = get_authors(f).each_slice(2).to_h.sort
-
-    author_md = author_mail.collect { |a, e| Markdown.mailto(a, e) }
+    author_md = Git.log(f).author_email
+    author_md = author_md.sort
+    author_md = author_md.map { |a, e| Markdown.mailto(a, e) }
 
     output = author_md.join ', '
     output = "Authors: #{output}"

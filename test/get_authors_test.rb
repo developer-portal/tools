@@ -38,11 +38,6 @@ class TestGetAuthors < Minitest::Test
     assert_match %Q|\n{:center: style=\"text-align: center\"}\nAuthors: [Your Name](mailto:you@example.com)\n{:center}|, content
   end
 
-  def test_get_authors
-    method_output = get_authors File.join(@subdir, 'README.md')
-    assert_equal ['Your Name', 'you@example.com'], method_output
-  end
-
   def test_markdown_mailto
     author, email = "Your Name", "you@example.com"
     assert_match "[#{author}](mailto:#{email})", Markdown.mailto(author, email)
@@ -51,6 +46,17 @@ class TestGetAuthors < Minitest::Test
   def test_markdown_center
     text = 'foo'
     assert_match %Q|{:center: style="text-align: center"}\n#{text}\n{:center}|, Markdown.center(text)
+  end
+
+  def test_git_log
+    method_output = Git.log File.join(@subdir, 'README.md')
+    assert_equal "Your Name;you@example.com", "#{method_output}"
+  end
+
+  def test_latest_author_email_is_used
+    output = "Your Name;you@example.com\nYour Name;me@example.com"
+    git_log = Git::Log.new output
+    assert_equal({"Your Name"=>"you@example.com"}, git_log.author_email)
   end
 
   def test_that_it_writes_authors_once
