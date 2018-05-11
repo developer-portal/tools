@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
 # This script gets last 5 authors of a file and writes them at the end of the file.
 
-# Get last 5 authors of a file and their email
+
+# Git::Log parses output passed from Git#log and creates a hash with author as a key and email as value
 module Git
-  # Git::Log parses output passed from Git#log and creates a hash with author as a key and email as value
   class Log
     # We are expecting output from "git log" command
     def initialize(log)
