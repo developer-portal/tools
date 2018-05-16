@@ -40,7 +40,7 @@ end
 
 module Markdown
   def self.mailto(a, e)
-    "[#{a}](mailto:#{e})"
+    "[#{a}](mailto:{{ '#{e}' | encode_email }})"
   end
 
   def self.center(text)
