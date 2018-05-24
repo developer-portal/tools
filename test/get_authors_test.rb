@@ -17,13 +17,13 @@ class TestGetAuthors < Minitest::Test
     Dir.chdir @dir
 
 
-    `git init`
+    Git.execute 'init'
 
-    `git config user.email "you@example.com"`
-    `git config user.name "Your Name"`
+    Git.execute 'config user.email "you@example.com"'
+    Git.execute 'config user.name "Your Name"'
 
-    `git add .`
-    `git commit -m "Initial commit"`
+    Git.execute 'add .'
+    Git.execute 'commit -m "Initial commit"'
   end
 
   def teardown

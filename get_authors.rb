@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 # This script gets last 5 authors of a file and writes them at the end of the file.
 
-
 # Git::Log parses output passed from Git#log and creates a hash with author as a key and email as value
 module Git
   class Log
@@ -30,11 +29,22 @@ module Git
     end
   end
 
+  # Take a git command and execute
+  # Abort if command didn't execute successfully
+  # then return output of the command.
+  def self.execute(command)
+    output = `git #{command}`
+
+    abort "Unknown git command: '#{command}'" unless $?.success?
+
+    return output
+  end
+
   # Create instance of Git::Log and pass it output from git log command
   # return 5 last authors of a particular file
   # %an returns author, semicolon for effortless parsing, %ae return email of author
   def self.log(file)
-    Log.new(`git log -5 --pretty=format:"%an;%ae" #{file}`)
+    Log.new(execute("log -5 --pretty=format:'%an;%ae' #{file}"))
   end
 end
 
