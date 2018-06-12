@@ -23,15 +23,6 @@ getd () {
   readlink -f "$P/$1"
 }
 
-get_authors () {
-  local S="`getd "tools/get_authors.rb"`"
-
-  [[ -r "$S" ]] || die 'get_authors script missing'
-
-  scd "website/content"
-  vrun "ruby '$S'"
-}
-
 usage () {
   awk '{if(NR>1)print;if(NF==0)exit(0)}' < "$0" | sed '
     s|^#[   ]||
@@ -142,9 +133,6 @@ buildsite () {
     rm -rf "$X"
 
   }
-
-  logg 'Generating authors ...'
-  get_authors
 
   scd 'website'
   logg 'Building site ...'
