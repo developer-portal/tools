@@ -15,8 +15,7 @@
 #
 #
 
- . $(dirname "`readlink -e "$0"`")/common.sh
-[[ "$SITE" ]] || exit 1
+ . $(dirname "`readlink -e "$0"`")/common.sh || exit 1
 
 [[ "$1" == "-c" ]] && { CONT="$1" ; shift ; } || CONT=
 
@@ -24,6 +23,7 @@
   logg "Force update"
   shift
 
+  :
 } || {
   [[ "$CONT" ]] && logg "Git monitoring..."
 
@@ -42,39 +42,36 @@
     }
 
     break
-
   done
-
 }
 
- [[ "$1" == '-s' ]] && { SIM="$1" ; shift ; } || SIM=
+  [[ "$1" == '-s' ]] && { SIM="$1" ; shift ; } || SIM=
 
- MSG='Devel update\n'
+  MSG='Devel update\n'
 
- upgit "website"
- upgit "website/content"
+  upgit "website"
+  upgit "website/content"
 
- buildsite
+  buildsite
 
- HTML="/var/www/html/"
+  prepgit devel
+  vrun -a $SIM "git push"
 
- scd "website"
- vrun -a $SIM "$RSYN rss.py $DST/root/"
- vrun -a $SIM "$RSYN rss.py $DST$HTML"
+  HTML="/var/www/html/"
 
- scd "website/_site"
- vrun -a $SIM "$RSYN * $DST$HTML"
- vrun -a $SIM "$RSYN * $DST/root/_site/"
+  scd "website"
+  vrun -a $SIM "$RSYN rss.py $DST/root/"
+  vrun -a $SIM "$RSYN rss.py $DST$HTML"
 
- prepgit devel
+  scd "website/_site"
+  vrun -a $SIM "$RSYN * $DST$HTML"
+  vrun -a $SIM "$RSYN * $DST/root/_site/"
 
- vrun -a $SIM "git push"
+  [[ "$CONT" ]] || exit 0
 
- [[ "$CONT" ]] || exit 0
-
- scd
- logg "Done\n"
- logg "`date -I'seconds'`"
- C="`readlink -e "$0"` -c"
- logg "exec $C"
- exec $C -c
+  scd
+  logg "Done\n"
+  logg "`date -I'seconds'`"
+  C="`readlink -e "$0"` -c"
+  logg "exec $C"
+  exec $C -c

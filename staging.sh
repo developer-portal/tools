@@ -5,22 +5,19 @@
 #   Does only local changes.
 #   For common options, see './common.sh -h'.
 #
-#
 
-  . $(dirname "`readlink -e "$0"`")/common.sh
- [[ "$SITE" ]] || exit 1
+ . $(dirname "`readlink -e "$0"`")/common.sh || exit 1
 
- MSG='Content & Website update\n'
+  MSG='Content & Website update\n'
 
- upgit "website"
- upgit "website/content"
+  upgit "website"
+  upgit "website/content"
 
- scd "website"
- echo > _includes/announcement.html
+  scd "website"
+  vrun 'echo > _includes/announcement.html'
 
- buildsite
+  buildsite
 
- prepgit master
+  prepgit master
 
- scd
- logg "Done\n"
+  logg "Done\n"

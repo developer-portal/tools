@@ -11,6 +11,10 @@
 #
 #
 
+ set -e
+ ME="$(readlink -e "$0")"
+ bash -n "$ME"
+
  F="Failed to"
  P="`pwd`"
  LOGF="$(readlink -m "$P/log/`date -I'seconds'`_`basename -s '.sh' "$0"`.log")"
@@ -51,28 +55,26 @@ upgit () {
 scd () {
   local D="`getd "$1"`"
   local S=
+
   [[ "$2" == "-s" ]] && S=y
 
   [[ "$D" ]] || {
     [[ "$S" ]] && return 1
 
     die "Dir nonexistent '$P/$1'"
-
   }
 
   cd "$D" || die "$F cd '$D'"
-  [[ "`pwd`" == "$D" ]] || die "Invalid cd '`pwd`' <> '$D'"
+  [[ "`pwd`" == "$D" ]] || die "Invalid cd '`pwd`' != '$D'"
   [[ "$S" ]] || logg "cd '$D'"
 
   return 0
-
 }
 
 die () {
   logg "Error: ${1}!" >&2
 
   exit 1
-
 }
 
 logg () {
@@ -81,31 +83,27 @@ logg () {
   echo
 
   return 0
-
 }
 
 vrun () {
   [[ "$1" == '-a' ]] && {
     shift
     [[ "$INT" ]] && ask "$1"
-
   }
 
   [[ "$1" == '-s' ]] && {
     shift
     logg "[NOT RUN] $1"
     return 0
-
   }
 
   logg "$1"
 
   [[ "$DEB" ]] && set -x
   bash -c "$1 2>&1" || die "while running '$1'"
-  [[ "$DEB" ]] && set +x
+  [[ "$DEB" ]] && { { set +x ; } &>/dev/null ; }
 
   return 0
-
 }
 
 gitnchange () {
@@ -128,13 +126,13 @@ buildsite () {
   local Y="website/_site"
   local X="`getd "$Y"`"
 
+  scd 'website'
+
   [[ -d "$X" || -r "$X" ]] && {
     logg "Removing '$X'"
     rm -rf "$X"
-
   }
 
-  scd 'website'
   logg 'Building site ...'
 
   local f=
@@ -150,12 +148,10 @@ buildsite () {
     echo "$TMP" > "$z"
     TMP=
   done
-
 }
 
 addmsg () {
   MSG="`echo -e "$MSG\n$1"`"
-
 }
 
 ask () {
@@ -169,7 +165,6 @@ ask () {
   done
 
   [[ "${R^^}" == "Y" ]] || die "User Quit"
-
 }
 
 prepgit () {
@@ -221,3 +216,5 @@ prepgit () {
  exec &> >(tee -a "$LOGF")
 
   . $(dirname "`readlink -e "$0"`")/enable_scl.sh
+
+ set +e

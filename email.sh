@@ -8,28 +8,26 @@
 #   -s    output for staging server
 #
 
- . $(dirname "`readlink -e "$0"`")/common.sh &>/dev/null
+ . $(dirname "`readlink -e "$0"`")/common.sh &>/dev/null || exit 1
 
-U1='https://developer.'
-U2='fedoraproject.org/'
+  U1='https://developer.'
+  U2='fedoraproject.org/'
 
-stg=
-ind=
+  stg=
+  ind=
+  c=0
 
-[[ "$1" == '-s' ]] && { stg='stg.' ; ind='  ' ; shift ; }
-URL="$U1$stg$U2"
+  [[ "$1" == '-s' ]] && { stg='stg.' ; ind='  ' ; shift ; }
 
-[[ -d "$SITE" ]] || exit 1
-cd "$SITE" || exit 1
+  URL="$U1$stg$U2"
 
-c=0
-
-git log --numstat master -1 \
-  | grep '^[0-9]' \
-  | tr -s '\t' ' ' \
-  | cut -d' ' -f3 \
-  | grep -vE '^(js/index.json|sitemap.xml|deployment.html|start.html|tech.html|tools.html|css/main.css|index.html)$' \
-  | while read x; do
-    let 'c+=1'
-    echo "${ind}[$c] ${URL}$x"
-  done
+  git log --numstat master -1 \
+    | grep '^[0-9]' \
+    | tr -s '\t' ' ' \
+    | cut -d' ' -f3 \
+    | grep -vE '^(js/index.json|sitemap.xml|deployment.html|start.html|tech.html|tools.html|css/main.css|index.html)$' \
+    | \
+    while read x; do
+      let 'c+=1'
+      echo "${ind}[$c] ${URL}$x"
+    done

@@ -8,17 +8,15 @@
 #   All args are passed to devel.sh
 #
 
- [[ "$1" == "-h" ]] && { echo 'No help here! `head` this file ;)' ; exit 0 ; }
+  [[ "$1" == "-h" ]] && { echo 'No help here! `head` this file ;)' ; exit 0 ; }
 
- D="$(readlink -f "`dirname "$0"`")"
- F="`readlink -f "$D/devel.sh"`"
+  D="$(readlink -f "`dirname "$0"`")"
+  F="`readlink -f "$D/devel.sh"`"
 
- [[ -x "$F" ]] || { echo "Could not exec '$F' in '$D'" ; exit 1 ; }
+  [[ -x "$F" ]] || { echo "Could not exec '$F' in '$D'" ; exit 1 ; }
 
-while :; do
-  echo -e "\n--> Running $F -c $@"
-  $F -c "$@"
-  echo '=== FAIL ==='
-  sleep 300
-
-done
+  while echo -e "\n--> Running $F -c $@"; do
+    $F -c "$@"
+    echo '=== FAIL ==='
+    sleep 300
+  done
