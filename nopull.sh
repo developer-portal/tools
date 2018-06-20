@@ -1,22 +1,32 @@
 #!/bin/bash
 #
-# ./nopull.sh BRANCH [common]
+# ./nopull.sh [common][options] BRANCH [common]
 #   Simple build, no rsync to server or git push.
+#
+# See `common.sh -h` for common options.
+#
+# Options:
+#   -s      Do a 'Staging' build - without devel-server message.
 #
 # BRANCH    branch for commit on git
 #
 
-  . $(dirname "`readlink -e "$0"`")/common.sh
-[[ "$SITE" ]] || exit 1
-[[ -n "$1" ]] || die 'you have to specify a branch.'
+ . $(dirname "`readlink -e "$0"`")/common.sh || exit 1
 
-[[ "$1" == "devel" ]] || {
   scd "website"
-  echo > _includes/announcement.html
-}
 
- buildsite
+  [[ "$1" == '-s' ]] && {
+    shift
+    [[ -z "$1" ]] && die 'You have to specify a branch.'
 
- MSG="${1^} update\n"
+    echo 'Warning: building without devel message!'
+    vrun 'echo > _includes/announcement.html'
 
- prepgit "$1"
+    :
+  } || vrun 'git checkout HEAD _includes/announcement.html'
+
+  buildsite
+
+  B="${1:-devel}"
+  MSG="${B^} update\n"
+  prepgit "$B"
