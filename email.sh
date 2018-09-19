@@ -16,18 +16,21 @@
   stg=
   ind=
   c=0
+  br=release
 
-  [[ "$1" == '-s' ]] && { stg='stg.' ; ind='  ' ; shift ; }
+  [[ "$1" == '-s' ]] && { stg='stg.' ; br=master ; ind='  ' ; shift ; }
 
   URL="$U1$stg$U2"
 
-  git log --numstat master -1 \
+  scd "$SITE"
+
+  git log --numstat -1 "$br" \
     | grep '^[0-9]' \
     | tr -s '\t' ' ' \
     | cut -d' ' -f3 \
     | grep -vE '^(js/index.json|sitemap.xml|deployment.html|start.html|tech.html|tools.html|css/main.css|index.html)$' \
     | \
     while read x; do
-      let 'c+=1'
-      echo "${ind}[$c] ${URL}$x"
+      #let 'c+=1'
+      echo "${ind}[] ${URL}$x"
     done
