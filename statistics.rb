@@ -25,10 +25,22 @@ d[k].each { |a|
 }
 
 l = 'Total'
-ARGF.each { |b| 
-  next if b[0] == '%'
-  b.squeeze(' ').split(' ').each { |a|
-    if a[0] == '/' ; l=a else ins.call(a) end
+ARGF.each_with_index { |b, i|
+  b.chomp!
+  next if %w[ % ( $ ].include?(b[0]) \
+    || b =~ /^\s*$/ \
+    || b =~ /^100.00%$/ \
+
+  #p b if i < 30
+
+  b.squeeze(' ').split(' ').each {
+    |a|
+
+    if a[0] == '/'
+      l=a
+    else
+      ins.call(a)
+    end
   }
 }
 
