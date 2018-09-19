@@ -18,7 +18,7 @@
  F="Failed to"
  P="`pwd`"
  LOGF="$(readlink -m "$P/log/`date -I'seconds'`_`basename -s '.sh' "$0"`.log")"
- RSYN='rsync --del -az'
+ RSYN='rsync --del -a'
  DST='root@developer.fedorainfracloud.org:'
  LOGGPR="--> "
  SITE='developer.fedoraproject.org'
