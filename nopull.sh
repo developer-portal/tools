@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# ./nopull.sh [common][options] BRANCH [common]
+# ./nopull.sh [common][options] BRANCH
 #   Simple build, no rsync to server or git push.
 #
 # See `common.sh -h` for common options.
