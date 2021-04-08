@@ -12,18 +12,20 @@
 
   scd "website"
 
-  # container run
-  vrun 'docker run -it --rm -p4000:4000 -v $PWD:/opt/developerportal/website:Z pvalena/developer-portal'
-
   vrun 'echo > _includes/announcement.html'
+
+  # container run
+  vrun 'docker run -d --rm -p4000:4000 -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/start'
+
+  sleep 10
 
   # container copy
   vrun 'podman container cp "`podman ps -lq`:/opt/developerportal/website/_site/" .'
 
+  vrun 'podman stop -l'
+
   cleanup
 
   prepgit master
-
-  vrun 'podman stop -l'
 
   logg "Done\n"

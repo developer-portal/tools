@@ -145,22 +145,24 @@ buildsite () {
 }
 
 cleanup () {
-  local Y="website/_site"
-  local X="`getd "$Y"`"
+  scd "website/_site"
 
-  scd 'website'
+  logg 'Whitespace cleanup ...'
 
-  [[ -d "$X" ]] || die "'$X' does not exist!"
+  [[ "$DEB" ]] && set -x
 
-  find "$X" -type f -iname '*.html' | while read z; do
+  find . -type f -iname '*.html' | while read z; do
     TMP="`ruby -ne 'BEGIN{ \$pre = false } ; x = \$_ ; \$pre = ( (x =~ /<pre/i) || (\$pre && !(x =~ /<\/pre/i) ) ) ; print unless (!\$pre && x =~ /^\s*$/)' < "$z"`"
 
     echo "$TMP" > "$z"
     TMP=
   done
 
-  # Fixup urls
-  grep -r 'http://0\.0\.0\.0:4000/' "$X" -l | xargs -n1 sed -i 's|http://0\.0\.0\.0\:4000|https://developer.fedoraproject.org|g'
+  logg 'Fixup urls ...'
+
+  grep -r 'http://0\.0\.0\.0:4000/' -l | xargs -n1 sed -i 's|http://0\.0\.0\.0\:4000|https://developer.fedoraproject.org|g'
+
+  [[ "$DEB" ]] && set +x
 }
 
 addmsg () {
