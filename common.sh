@@ -141,13 +141,26 @@ buildsite () {
   grep -v "Build Warning: Layout 'content' requested in" <<< "$O"
   [[ -n "$f" ]] && die "Jekyll build failed!"
 
+  cleanup
+}
+
+cleanup () {
+  local Y="website/_site"
+  local X="`getd "$Y"`"
+
+  scd 'website'
+
   [[ -d "$X" ]] || die "'$X' does not exist!"
+
   find "$X" -type f -iname '*.html' | while read z; do
     TMP="`ruby -ne 'BEGIN{ \$pre = false } ; x = \$_ ; \$pre = ( (x =~ /<pre/i) || (\$pre && !(x =~ /<\/pre/i) ) ) ; print unless (!\$pre && x =~ /^\s*$/)' < "$z"`"
 
     echo "$TMP" > "$z"
     TMP=
   done
+
+  # Fixup urls
+  grep -r 'http://0\.0\.0\.0:4000/' "$X" -l | xargs -n1 sed -i 's|http://0\.0\.0\.0\:4000|https://developer.fedoraproject.org|g'
 }
 
 addmsg () {
