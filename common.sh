@@ -11,6 +11,8 @@
 #
 #
 
+bash -n "$0" || exit 7
+
  set -e
  ME="$(readlink -e "$0")"
  bash -n "$ME"
