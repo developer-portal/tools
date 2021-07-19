@@ -27,13 +27,15 @@ vrun 'echo > _includes/announcement.html'
 # container run
 vrun 'podman run --pull=always -d -p4000:4000 -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/devel'
 
-sleep 10
+sleep 15
 
 vrun 'podman logs -l'
 vrun 'podman ps -l --format "{{.Status}}" | grep "^Up "'
 
 # container copy
 vrun 'podman container cp "`podman ps -lq`:/opt/developerportal/website/_site/" .'
+
+sleep 1
 
 vrun 'podman stop -l'
 
