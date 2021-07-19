@@ -3,9 +3,13 @@
 # ./email.sh [common] [-s]
 #   Get links for email.
 #   Does not do any changes.
+#
+#   Details: works with latest developer.fedoraproject.org commit.
+#     Extracts all changed files (apart from filtered ones).
+#
 #   For common options, see './common.sh -h'.
 #
-#   -s    output for staging server
+#   -s    output for staging branch
 #
 
  . $(dirname "`readlink -e "$0"`")/common.sh &>/dev/null || exit 1

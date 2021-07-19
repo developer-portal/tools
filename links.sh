@@ -1,8 +1,12 @@
 #!/bin/bash
 #
-# ./links.sh [common] [-s]
+# ./links.sh [common] [-s] COMMIT
 #   Git diff to links.
 #   Does not do any changes.
+#
+#   Details: works on website/content repository,
+#     compares current commit against with one supplied in argument.
+#
 #   For common options, see './common.sh -h'.
 #
 #   -s    output for staging server
