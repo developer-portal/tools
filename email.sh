@@ -16,9 +16,23 @@
   stg=
   ind=
   c=0
-  br=release
+  br='origin/release'
 
-  [[ "$1" == '-s' ]] && { stg='stg.' ; br=master ; ind='  ' ; shift ; }
+  [[ "$1" == '-s' ]] && {
+    stg='stg.'
+    br='origin/master'
+    ind='  '
+    shift
+    :
+  }
+
+  [[ -n "$1" ]] && {
+    br="$1"
+    shift
+    :
+  }
+
+  [[ -n "$br" ]] || die 'Branch missing.'
 
   URL="$U1$stg$U2"
 
