@@ -203,7 +203,7 @@ prepgit () {
   vrun "cp -r `getd "website/_site"`/* ."
   vrun "cp -r `getd "website"`/rss.py ."
 
-  vrun "gita -A"
+  vrun "git add -A"
 
   local C="git commit -am"
   echo "${LOGGPR}$C $MSG"
