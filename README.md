@@ -21,18 +21,30 @@ Check the usage for any script with:
 
 Latest way to build the website is using the container:
 
-```
-$ tools/container.sh
-```
+    $ tools/container.sh
 
-## Changes overview
 
-To get links with changed files, run:
+Commit with generated website is created in `developer.fedoraproject.org` directory.
 
-```
-$ tools/links.sh -s de3274559907af5e25377717be58e2305801986c
-```
- - `-s` for staging
- - and commit to diff to.
 
-Alternatively, there's `email.sh` script that uses `developer.fedoraproject.org` (latest commit only), and is more accurate/detailed (i.e. includes whitespace changes).
+## Changes overview for ML purposes
+
+After you've done building the website, and reviewing the commit, you can use `email.sh` or `links.sh` script to get the links list of changed files.
+
+The `email.sh` script uses `developer.fedoraproject.org` latest pushed commit on `origin/release`, or `origin/master` branch with `-s`, respectively. This output is more detailed (includes Markdown files changes), but needs the changes pushed to `origin` remote.
+
+Example:
+
+    $ tools/email.sh -s
+
+_ _ _ _
+
+Alternatively, you can use `links.sh`, which uses `content` repository to get list of changed files in comparison to specified commit. You need to specify the latest released `content` commit (ideally). It uses current state (actual commit) of `content` repository to diff to. The purpose of this script is to work around large commits, which change all files.
+
+Example:
+
+    $ tools/links.sh -s de3274559907af5e25377717be58e2305801986c
+
+_ _ _ _
+
+For both, there's option `-s` to get changes for staging website/repository.
