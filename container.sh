@@ -5,12 +5,23 @@
 #   Does only local changes.
 #
 # Options:
+#
+#   -c    Continue with current container, don't pull an updated one.
+#
 #   -u    Update to latest website+content git commits
 #
 # For common options, see './common.sh -h'.
 #
 
  . $(dirname "`readlink -e "$0"`")/common.sh || exit 1
+
+[[ "$1" == "-c" ]] && {
+  shift
+  PULL=''
+  :
+} || {
+  PULL="--pull=always"
+}
 
 [[ "$1" == "-u" ]] && {
   shift
@@ -25,7 +36,7 @@ scd "website"
 vrun 'echo > _includes/announcement.html'
 
 # container run
-vrun 'podman run --pull=always -d -p4000:4000 -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/devel'
+vrun "podman run $PULL -d -p4000:4000 -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/devel"
 
 sleep 15
 
