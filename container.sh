@@ -37,7 +37,7 @@ vrun 'echo > _includes/announcement.html'
 vrun 'rm Gemfile.lock ||:'
 
 # container run
-vrun "podman run $PULL -d -p4000:4000 -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/devel"
+vrun "podman run $PULL -d --rm -v $PWD:/opt/developerportal/website:Z quay.io/developer-portal/devel"
 
 sleep 15
 
